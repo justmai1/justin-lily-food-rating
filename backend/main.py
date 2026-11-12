@@ -1,6 +1,7 @@
 
 from contextlib import asynccontextmanager
 from datetime import date
+import os
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -25,7 +26,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "https://justin-lily-food-rating.onrender.com"
+        os.getenv("FRONTEND_URL", "https://justin-lily-food-rating.onrender.com").rstrip("/")
     ],
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"]

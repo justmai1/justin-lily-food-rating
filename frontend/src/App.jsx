@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import "./App.css";
 
 // Restaurants are loaded from SQLite through FastAPI.
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_URL = (
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? "http://localhost:8000" : "")
+).replace(/\/$/, "");
 
 const emptyForm = {
   name: "",
@@ -124,10 +126,12 @@ function App() {
     try {
       setError("");
   
+      if (!API_URL) {
+        throw new Error("VITE_API_URL is missing from the deployed frontend. Set it in Render and redeploy.");
+      }
       const response = await fetch(`${API_URL}/ratings`);
-  
       if (!response.ok) {
-        throw new Error("Could not load restaurants");
+        throw new Error(`Could not load restaurants (${response.status})`);
       }
   
       const data = await response.json();
@@ -141,6 +145,12 @@ function App() {
 
   useEffect(() => {
     let active = true;
+    if (!API_URL) {
+      setError("VITE_API_URL is missing. Set it in your Render Static Site environment and redeploy.");
+      setLoading(false);
+      return;
+    }
+    console.info("Ratings API:", `${API_URL}/ratings`);
     fetch(`${API_URL}/ratings`)
       .then(async (response) => {
         if (!response.ok) throw new Error(`Could not load restaurants (${response.status})`);
@@ -149,7 +159,7 @@ function App() {
         if (active) setRestaurants(data);
       })
       .catch((err) => {
-        if (active) setError(err.message);
+        if (active) setError(`${err.message} (API: ${API_URL}/ratings). Check the browser Console for CORS or network errors.`);
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -203,6 +213,7 @@ function App() {
     };
   
     try {
+      if (!API_URL) throw new Error("VITE_API_URL is missing in production.");
       setSaving(true);
       setError("");
   
@@ -227,6 +238,7 @@ function App() {
   
       // Saved rows include SQLite-generated ovr_rating.
       // If refresh fails, retain the form to avoid losing the entry.
+      // Refresh; a failed refresh should not pretend the save failed.
       await fetchRestaurants();
   
       setForm({ ...emptyForm });
