@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import "./App.css";
 
 // Restaurants are loaded from SQLite through FastAPI.
-const API_URL = "http://localhost:8000";
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const emptyForm = {
   name: "",
