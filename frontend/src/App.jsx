@@ -121,16 +121,22 @@ function App() {
 
   // Load database records and show errors rather than hiding failures.
   async function fetchRestaurants() {
-    const response = await fetch(`${API_URL}/ratings`);
-    if (!response.ok) {
-      throw new Error(`Could not load restaurants (${response.status})`);
+    try {
+      setError("");
+  
+      const response = await fetch(`${API_URL}/ratings`);
+  
+      if (!response.ok) {
+        throw new Error("Could not load restaurants");
+      }
+  
+      const data = await response.json();
+      setRestaurants(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-    const data = await response.json();
-    if (!Array.isArray(data)) {
-      throw new Error("Unexpected response from the API");
-    }
-    setRestaurants(data);
-    setError("");
   }
 
   useEffect(() => {
