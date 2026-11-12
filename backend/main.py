@@ -115,3 +115,19 @@ def add_rating(restaurant: RestaurantCreate):
         result = dict(saved)
 
     return result
+
+@app.delete("/ratings/{rating_id}")
+def delete_rating(rating_id: int):
+    with get_connection() as conn:
+        cursor = conn.execute(
+            "DELETE FROM rating WHERE rating_id = ?",
+            (rating_id,)
+        )
+
+        if cursor.rowcount == 0:
+            raise HTTPException(
+                status_code=404,
+                detail="Restaurant not found"
+            )
+
+    return {"message": "Restaurant deleted successfully"}
