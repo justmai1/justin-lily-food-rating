@@ -471,15 +471,19 @@ function App() {
                   </option>
 
                   {[
+                    "African",
                     "American",
                     "Chinese",
+                    "French",
+                    "Greek",
+                    "Indian",
                     "Italian",
                     "Japanese",
                     "Korean",
                     "Mexican",
+                    "Middle Eastern",
                     "Thai",
-                    "Vietnamese",
-                    "Other"
+                    "Vietnamese"
                   ].map((item) => (
                     <option key={item} value={item}>
                       {item}
