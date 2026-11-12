@@ -289,7 +289,7 @@ function App() {
           OUR FOOD JOURNAL
         </span>
 
-        <h1>Justin + Lily's Ratings</h1>
+        <h1>Justin + Lily's Food Ratings</h1>
 
         <p>Food spots we're rating together.</p>
       </header>
