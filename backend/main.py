@@ -21,19 +21,14 @@ app = FastAPI(lifespan=lifespan)
 
 
 # Allow requests from React
-frontend_url = os.getenv("FRONTEND_URL", "").rstrip("/")
-
-allowed_origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
-
-if frontend_url:
-    allowed_origins.append(frontend_url)
-
+# Allow requests from React
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://justin-lily-food-rating-4956.onrender.com"
+    ],
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )
